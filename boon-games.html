@@ -1,0 +1,343 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Page - Game Center</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .header {
+      background: linear-gradient(to right, #04a174, #00537a);
+      color: white;
+      padding: 20px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      position: relative;
+    }
+
+    .header .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .user-info img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+      border: 2px solid white;
+    }
+
+    .user-id {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .joined-date {
+      font-size: 13px;
+      color: #ffe6d5;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      background-color: white;
+      margin: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .menu div {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .menu img {
+      width: 30px;
+    }
+
+    .games-section {
+      padding: 0 15px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 20px 0 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .game-card img {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      margin-right: 15px;
+    }
+
+    .game-info {
+      flex-grow: 1;
+    }
+
+    .game-info h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .game-info small {
+      color: gray;
+      font-size: 12px;
+    }
+
+    .btn {
+      background-color: #f5a201;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      padding: 5px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: white;
+      border-top: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .bottom-nav div {
+      text-align: center;
+      color: black;
+      font-size: 12px;
+    }
+
+    .bottom-nav img {
+      width: 25px;
+    }
+
+    .active {
+      color: #fff;
+      background-color: #a8e8fa;
+      border-radius: 5px;
+      padding: 4px 15px;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="user-info">
+      <img src="coin.png" alt="avatar">
+      <div>
+                <div class="joined-date">Active Balance</div>
+        <div class="user-id">  ️<span id="user-balance">00</span> BNT </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="menu">
+    <div onclick="alert('Feedback clicked')">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828936.png" alt="Feedback">
+      <div>Claim</div>
+    </div>
+    <div onclick="alert('Rewards clicked')">
+      <img src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Rewards">
+      <div>Redeem</div>
+    </div>
+  </div>
+
+  <div class="games-section">
+    <div class="section-title">
+      <span>Games Wall</span>
+      <span style="color: gray; font-size: 14px;">View all</span>
+    </div>
+
+    <div class="game-card">
+      <img src="boonpuzzle.png" alt="">
+      <div class="game-info">
+        <h4>Boon Puzzle </h4>
+        <small>⭐ 7.5 | Number puzzle game.
+
+ Puzzle</small>
+      </div>
+      <button class="btn" onclick="window.location.href='boon-puzzle.html'">Play</button>
+    </div>
+
+    <div class="game-card">
+      <img src="boonspin.png"  alt="">
+      <div class="game-info">
+        <h4>Boon Spin</h4>
+        <small>⭐ 8.7 | Two-color spinning wheel</small>
+      </div>
+      <button class="btn" onclick="window.location.href='boon-spin.html'">Play</button>
+    </div>
+
+    <div class="game-card">
+      <img src="boontoss.png"  alt="">
+      <div class="game-info">
+        <h4>Boon Toss</h4>
+        <small>⭐ 5.2 | Flip a coin and guess</small>
+      </div>
+      <button class="btn" onclick="window.location.href='boon-toss.html'">Play</button>
+    </div>
+
+    <div class="game-card">
+      <img src="https://cdn-icons-png.flaticon.com/512/147/147144.png" alt="">
+      <div class="game-info">
+        <h4>Boon Dice </h4>
+        <small>⭐ 8.0 | Roll the dice</small>
+      </div>
+
+      <button class="btn" onclick="window.location.href='boon-dice.html'">Play</button>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+       <a href="index.html">
+    <div>
+      <img src="home.png" alt="home">
+      <div>Home</div>
+    </div>
+     
+</a>
+   <a href="boon-games.html">
+    <div class="active">
+      <img src="console.png" alt="category">
+      <div>Games</div>
+    </div>
+     
+</a>
+   <a href="boon-task.html">
+    <div>
+      <img src="task.png" alt="vs">
+      <div>Tasks</div>
+    </div>
+     
+</a>
+   <a href="boon-todo-list.html">
+    <div>
+      <img src="to-do-list.png" alt="downloads">
+      <div>To Do</div>
+    </div>
+     
+</a>
+   <a href="boon-more.html">
+  <div>
+      <img src="app.png" alt="me">
+      <div>More</div>
+    </div>
+</a>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-firestore.js"></script>
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtVvPjdsj84mWqaG4-7SyjbljCnslZ1SM",
+      authDomain: "hendaa-1.firebaseapp.com",
+      projectId: "hendaa-1",
+      storageBucket: "hendaa-1.appspot.com",
+      messagingSenderId: "831134776479",
+      appId: "1:831134776479:web:56cd7098fc69cd70a376aa"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Retrieve User Info and Balance
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const userId = user.uid;
+
+
+        // Show user info on the page
+
+        // Check if balance exists in Firestore
+        const userDocRef = db.collection("users").doc(userId);
+        userDocRef.get().then((doc) => {
+          if (doc.exists) {
+            // Show existing balance
+            document.getElementById("user-balance").textContent = doc.data().balance || 0;
+          } else {
+            // Initialize new user balance as 0
+            userDocRef.set({ balance: 0, lastClaimed: null }, { merge: true });
+          }
+        }).catch((error) => {
+          console.error("Error fetching balance:", error);
+        });
+
+        // Claim Daily Bonus
+        document.getElementById("claim-bonus").addEventListener("click", () => {
+          userDocRef.get().then((doc) => {
+            if (doc.exists) {
+              const userData = doc.data();
+              const lastClaimed = userData.lastClaimed ? new Date(userData.lastClaimed) : null;
+              const now = new Date();
+
+              if (!lastClaimed || now - lastClaimed > 24 * 60 * 60 * 1000) {
+                // Update balance and set lastClaimed
+                const newBalance = (userData.balance || 0) + 20;
+                userDocRef.update({
+                  balance: newBalance,
+                  lastClaimed: now.toISOString()
+                }).then(() => {
+                  document.getElementById("user-balance").textContent = newBalance;
+                  alert("You have successfully claimed your daily bonus of $20!");
+                });
+              } else {
+                alert("You have already claimed your bonus today. Come back tomorrow!");
+              }
+            }
+          }).catch((error) => {
+            console.error("Error claiming bonus:", error);
+          });
+        });
+      } else {
+        // Redirect to login if no user is logged in
+        alert("You are not logged in! Redirecting to login page...");
+        window.location.href = "login.html";
+      }
+    });
+
+    // Logout Functionality
+    document.getElementById("logout-button").addEventListener("click", () => {
+      auth.signOut()
+        .then(() => {
+          alert("Logged out successfully!");
+          window.location.href = "login.html";
+        })
+        .catch((error) => {
+          console.error("Logout error:", error);
+        });
+    });
+  </script>
+</body>
+</html>
