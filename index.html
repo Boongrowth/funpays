@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin Game</title>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-firestore.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-image: url("b1.jpg");
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: transparent;
+    }
+
+    .balance-display {
+      padding: 5px 15px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 5px;
+      font-weight: 800;
+    }
+
+    .info-btn {
+      background: dodgerblue;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .game-container {
+      margin: 20px auto;
+      width: 320px;
+      padding: 20px;
+      border-radius: 10px;
+      background: transparent;
+    }
+
+    .wheel-container {
+      margin: 20px auto;
+      position: relative;
+      width: 260px;
+      height: 260px;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-image: url('w7.png');
+      background-size: cover;
+      border: none;
+      transition: transform 4s ease-out;
+    }
+
+    .pointer {
+      width: 50px;
+      height: 50px;
+      background-image: url('p.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: -50px;
+      left: 55%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .controls {
+      margin-top: 30px;
+    border-radius: 5px;
+      background: rgba(0,0,0,0.5);
+      padding: 15px;
+    }
+
+    .entry-fee-button, .card, #spin-btn {
+      display: inline-block;
+      padding: 5px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .entry-fee-button {
+      background: #eee;
+      color: black;
+    }
+    .entry-fee-button.selected {
+      background: #20c0f3;
+      color: white;
+    }
+
+    .card {
+      color: white;
+    }
+    .card[data-value="up"] {
+      background: blue;
+    }
+    .card[data-value="down"] {
+      background: red;
+    }
+    .card.selected {
+      border: 3px solid yellow;
+    }
+
+    #spin-btn {
+      background: gold;
+      color: black;
+      margin-top: 15px;
+    }
+    #spin-btn:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    .custom-alert {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background: white;
+      color: black;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #entry-fee-input {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 80px;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #002f9e, #1e90ff);
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px dotted #fff;
+      width: 90%;
+      max-width: 300px;
+      text-align: left;
+      position: relative;
+    }
+
+    .modal-tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .modal-tabs button {
+      flex: 1;
+      margin: 0 3px;
+      padding: 8px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: lightgray;
+    }
+
+    .modal-tabs button.active {
+      background: dodgerblue;
+      color: white;
+    }
+
+    .modal-body {
+      min-height: 100px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 5px;
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .back-to-home {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            padding: 6px 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .back-to-home i {
+            margin-right: 10px;
+        }
+        .back-to-home:hover {
+            background-color: #f1f1f1;
+            color: #007bff;
+        }
+ #username-display {
+  margin-bottom: 40px;
+  color: red;
+}
+
+#entry-fee-input {
+  width: 50%;
+            padding: 8px 15px;
+            margin-bottom: 10px;
+            border: 1px solid gray;
+            color: #222;
+            font-weight: bolder;
+            text-align: center;
+            border-bottom-right-radius: 20px;
+            border-top-left-radius: 20px;
+            box-sizing: border-box;
+            background-color: #eee;
+      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+      outline: none;
+        }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="index.html" class="back-to-home">
+      <i class="fas fa-angle-left"></i>
+    </a>
+    <h2>Spin Game</h2>
+    <div class="balance-display">💰: <span id="balance-display">0</span></div>
+  </div>
+
+  <div class="game-container">
+
+    <div class="wheel-container">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+    </div>
+
+    <div class="controls">
+      <div>
+        <div class="entry-fee-button" data-value="2">2</div>
+        <div class="entry-fee-button" data-value="5">5</div>
+        <div class="entry-fee-button" data-value="10">10</div>
+        <div class="entry-fee-button" data-value="20">20</div>
+        <div class="entry-fee-button" data-value="50">50</div>
+      </div>
+      <input id="entry-fee-input" type="number" placeholder="Custom Fee">
+
+      <div>
+        <div class="card" data-value="up">Guess: Up</div>
+        <div class="card" data-value="down">Guess: Down</div>
+      </div>
+      <button class="info-btn" id="info-btn">ℹ️ Info</button>
+      <button id="spin-btn" disabled>🎡 Spin Now</button>
+    </div>
+  </div>
+
+  <div class="custom-alert" id="custom-alert"></div>
+
+  <!-- Modal -->
+  <div class="modal" id="info-modal">
+    <div class="modal-content">
+      <button class="close-modal" id="close-modal">X</button>
+      <div class="modal-tabs">
+        <button data-tab="rules" class="active">Rules</button>
+        <button data-tab="history">History</button>
+        <button data-tab="settings">Settings</button>
+        <button data-tab="limit">Limit</button>
+        <button data-tab="help">Help</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <h3>Game Rules</h3>
+        <p>Select an entry fee, guess up or down, and spin. If your guess is correct, you double your bet!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase setup
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtVvPjdsj84mWqaG4-7SyjbljCnslZ1SM",
+      authDomain: "hendaa-1.firebaseapp.com",
+      projectId: "hendaa-1",
+      storageBucket: "hendaa-1.appspot.com",
+      messagingSenderId: "831134776479",
+      appId: "1:831134776479:web:56cd7098fc69cd70a376aa"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let user, balance = 0, entryFee = 0, guessedDirection = '';
+    const balanceDisplay = document.getElementById('balance-display');
+
+    const wheel = document.getElementById('wheel');
+    const customAlert = document.getElementById('custom-alert');
+    const spinBtn = document.getElementById('spin-btn');
+
+    auth.onAuthStateChanged(async (u) => {
+      if (u) {
+        user = u;
+        const userRef = db.collection('users').doc(user.uid);
+        const doc = await userRef.get();
+        if (!doc.exists) {
+          await userRef.set({ balance: 100 });
+          balance = 100;
+        } else {
+          balance = doc.data().balance || 0;
+        }
+        balanceDisplay.textContent = balance;
+
+      } else {
+        showAlert("Please log in to play.");
+        setTimeout(() => (window.location.href = "login.html"), 4000);
+      }
+    });
+
+    // Bet selection
+    document.querySelectorAll('.entry-fee-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.entry-fee-button').forEach(b => b.classList.remove('selected'));
+        button.classList.add('selected');
+        entryFee = parseInt(button.dataset.value);
+        document.getElementById('entry-fee-input').value = entryFee;
+        checkReady();
+      });
+    });
+
+    document.getElementById('entry-fee-input').addEventListener('input', e => {
+      entryFee = parseInt(e.target.value) || 0;
+      document.querySelectorAll('.entry-fee-button').forEach(b => b.classList.remove('selected'));
+      checkReady();
+    });
+
+    // Guess selection
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        guessedDirection = card.dataset.value;
+        checkReady();
+      });
+    });
+
+    function checkReady() {
+      spinBtn.disabled = !(entryFee > 0 && guessedDirection);
+    }
+
+    // Spin action
+    spinBtn.addEventListener('click', async () => {
+      if (balance < entryFee) {
+        showAlert("Insufficient balance!");
+        return;
+      }
+
+      spinBtn.disabled = true;
+      const randomDegree = Math.floor(Math.random() * 360);
+      const spinDegree = 2160 + randomDegree;
+
+      wheel.style.transition = `transform 4s ease-out`;
+      wheel.style.transform = `rotate(${spinDegree}deg)`;
+
+      setTimeout(async () => {
+        wheel.style.transition = "none";
+        wheel.style.transform = `rotate(${randomDegree}deg)`;
+
+        const resultDirection = randomDegree <= 180 ? 'up' : 'down';
+        let message = "", status = "", amountWon = 0;
+
+        try {
+          await db.runTransaction(async (t) => {
+            const doc = await t.get(db.collection('users').doc(user.uid));
+            let currentBalance = doc.data().balance || 0;
+
+            currentBalance -= entryFee;
+
+            if (guessedDirection === resultDirection) {
+              amountWon = entryFee * 2;
+              currentBalance += amountWon;
+              status = "won";
+              message = `🎉 Correct! You won ${amountWon}.`;
+            } else {
+              amountWon = 0;
+              status = "lost";
+              message = `❌ Wrong guess! You lost ${entryFee}.`;
+            }
+
+            t.update(doc.ref, { balance: currentBalance });
+            balance = currentBalance;
+          });
+
+          // ✅ Save spin history to Firestore
+          const historyRef = db.collection('users').doc(user.uid).collection('spinHistory').doc();
+          await historyRef.set({
+            id: historyRef.id,
+            date: new Date().toISOString(),
+            stake: entryFee,
+            status: status,
+            amountWon: amountWon,
+            resultDirection: resultDirection,
+            guessedDirection: guessedDirection
+          });
+
+        } catch (err) {
+          console.error(err);
+          showAlert("Error updating balance or saving history!");
+        }
+
+        balanceDisplay.textContent = balance;
+        showAlert(message);
+        spinBtn.disabled = false;
+      }, 4000);
+    });
+
+    function showAlert(message) {
+      customAlert.textContent = message;
+      customAlert.style.display = "block";
+      setTimeout(() => (customAlert.style.display = "none"), 4000);
+    }
+
+    // Modal logic
+    const infoBtn = document.getElementById("info-btn");
+    const infoModal = document.getElementById("info-modal");
+    const closeModal = document.getElementById("close-modal");
+    const modalBody = document.getElementById("modal-body");
+    const tabButtons = document.querySelectorAll(".modal-tabs button");
+
+    infoBtn.addEventListener("click", () => {
+      infoModal.style.display = "flex";
+    });
+
+    closeModal.addEventListener("click", () => {
+      infoModal.style.display = "none";
+    });
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.dataset.tab;
+        if (tab === "rules") {
+          modalBody.innerHTML = "<h3>Game Rules</h3><p>Select a fee, guess up/down, and spin. Win by guessing correctly.</p>";
+        } else if (tab === "history") {
+          modalBody.innerHTML = "<h3>Recent Activity</h3><p>Click the link below to check history</p><button>view activity</button>";
+        } else if (tab === "settings") {
+          modalBody.innerHTML = "<h3>Settings</h3><p><label><input type='checkbox'> Music</label><br><label><input type='checkbox'> Sound</label></p>";
+        } else if (tab === "limit") {
+          modalBody.innerHTML = "<h3>Limits</h3><p>Set your playtime and spending limits responsibly.</p>";
+        } else if (tab === "help") {
+          modalBody.innerHTML = "<h3>Help</h3><p>Choose your bet and guess, then spin. If wrong, try again!</p>";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
